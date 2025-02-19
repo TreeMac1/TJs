@@ -8,11 +8,6 @@ if (isset($_SESSION['success_message'])) {
     unset($_SESSION['success_message']); // Clear the message after displaying it
 }
 
-// Display logout message if set
-if (isset($_SESSION['logout_message'])) {
-    echo "<p style='color: green;'>{$_SESSION['logout_message']}</p>";
-    unset($_SESSION['logout_message']); // Clear the message after displaying it
-}
 ?>
 <!DOCTYPE html>
 <html>
@@ -66,22 +61,29 @@ if (isset($_SESSION['logout_message'])) {
         }
         .product-list {
             margin-top: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             animation: fadeIn 1s ease-in-out;
         }
         .product-item {
             border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            background-color: #f9f9f9;
             opacity: 0;
             animation: slideIn 0.5s forwards;
         }
         .product-item h3 {
             margin: 0;
-            font-size: 1.2em;
+            font-size: 1.5em;
+            color: #333;
         }
         .product-item p {
             margin: 5px 0;
+            color: #666;
         }
         .product-item a {
             margin-right: 10px;
