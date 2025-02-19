@@ -1,5 +1,5 @@
 <?php
-require_once "db.inc.php"; 
+require_once "db.inc.php";
 include "header.inc.php";
 
 // Establish database connection

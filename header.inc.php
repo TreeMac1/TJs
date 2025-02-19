@@ -12,7 +12,7 @@ session_start();
             padding: 0;
         }
         header {
-            background-color:rgb(255, 0, 0);
+            background-color: #007BFF;
             color: white;
             padding: 20px 0;
             text-align: center;
@@ -58,6 +58,7 @@ session_start();
                 <a href="logout.php">Logout</a>
             <?php else: ?>
                 <a href="login.php">Login</a>
+                <a href="register.php">Create Account</a>
             <?php endif; ?>
         </nav>
         <a href="cart.php" class="cart-icon">&#128722;</a> <!-- Unicode character for cart icon -->

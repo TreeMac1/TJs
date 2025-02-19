@@ -33,6 +33,9 @@ include "header.inc.php";
             margin-bottom: 15px;
             border-radius: 10px;
             background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .product-item h3 {
             margin: 0;
@@ -52,6 +55,22 @@ include "header.inc.php";
         .product-item a:hover {
             color: #0056b3;
         }
+        .product-item form {
+            display: inline;
+        }
+        .product-item button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #dc3545;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .product-item button:hover {
+            background-color: #c82333;
+        }
     </style>
 </head>
 <body>
@@ -65,9 +84,15 @@ include "header.inc.php";
 
         while ($row = mysqli_fetch_array($result)) {
             echo "<div class='product-item'>";
+            echo "<div>";
             echo "<h3>{$row['name']} - \${$row['price']}</h3>";
             echo "<p>{$row['comment']}</p>";
             echo "<p><small>Created at: {$row['created_at']}</small></p>";
+            echo "</div>";
+            echo "<form method='POST' action='remove_from_cart.php'>";
+            echo "<input type='hidden' name='product_id' value='{$row['id']}'>";
+            echo "<button type='submit'>Remove from Cart</button>";
+            echo "</form>";
             echo "</div>";
         }
     } else {

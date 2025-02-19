@@ -3,28 +3,26 @@ session_start();
 require_once "db.inc.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $myusername = $mysqli->real_escape_string($_POST['username']);
-    $mypassword = $mysqli->real_escape_string($_POST['password']);
+    $username = $mysqli->real_escape_string($_POST['username']);
+    $password = $mysqli->real_escape_string($_POST['password']);
+    $hashed_password = hash('sha256', $password);
 
-    $sql = "SELECT * FROM users WHERE username='$myusername'";
+    // Check if the username already exists
+    $sql = "SELECT * FROM users WHERE username='$username'";
     $result = mysqli_query($mysqli, $sql);
 
-    $row = mysqli_fetch_array($result);
-
-    // This is what happens when a user successfully authenticates
-    if ($row && hash_equals($row['password'], hash('sha256', $mypassword))) {
-        // Delete any data in the current session to start new
-        session_destroy();
-        session_start();
-
-        $_SESSION['username'] = $row['username'];
-        $_SESSION['success_message'] = "You have successfully logged in.";
-
-        // Redirect to the read.php page
-        header("Location: read.php");
-        exit();
+    if (mysqli_num_rows($result) > 0) {
+        $error_message = "Username already exists. Please choose a different username.";
     } else {
-        $error_message = "Incorrect username OR password";
+        // Insert the new user into the database
+        $sql = "INSERT INTO users (username, password) VALUES ('$username', '$hashed_password')";
+        if (mysqli_query($mysqli, $sql)) {
+            $_SESSION['success_message'] = "Account created successfully. Please log in.";
+            header("Location: login.php");
+            exit();
+        } else {
+            $error_message = "Error: " . mysqli_error($mysqli);
+        }
     }
 }
 ?>
@@ -32,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login</title>
+    <title>Register</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -62,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         .container input[type="text"],
         .container input[type="password"] {
-            width: 95%;
+            width: 93%;
             padding: 10px;
             margin-bottom: 20px;
             border: 1px solid #ddd;
@@ -86,24 +84,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: red;
             text-align: center;
         }
-        .register-link {
+        .success-message {
+            color: green;
             text-align: center;
-            margin-top: 10px;
-        }
-        .register-link a {
-            color: #007BFF;
-            text-decoration: none;
-        }
-        .register-link a:hover {
-            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Login</h2>
+        <h2>Register</h2>
         <?php if (isset($error_message)): ?>
             <p class="error-message"><?= htmlspecialchars($error_message) ?></p>
+        <?php endif; ?>
+        <?php if (isset($success_message)): ?>
+            <p class="success-message"><?= htmlspecialchars($success_message) ?></p>
         <?php endif; ?>
         <form method="POST">
             <label>Username:</label>
@@ -112,9 +106,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label>Password:</label>
             <input type="password" name="password" required />
 
-            <input type="submit" value="Log In" />
+            <input type="submit" value="Register" />
         </form>
-        </div>
     </div>
 </body>
 </html>
