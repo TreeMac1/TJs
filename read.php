@@ -19,6 +19,12 @@ if (isset($_SESSION['logout_message'])) {
 <head>
     <title>Products</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color:rgb(219, 206, 160);
+            margin: 0;
+            padding: 0;
+        }
         .search-form {
             margin-bottom: 20px; /* Adjust the value as needed */
             display: flex;
