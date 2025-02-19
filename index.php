@@ -116,7 +116,7 @@
     <h1>Welcome!</h1>
     <img alt="Orange Juice" src="images/discojuice.jpg" />
     <p>Thanks for stopping by!</p>
-    <p>Please purchase our <a href="./products.php">products</a>. We have good juices.</p>
+    <p>Please purchase our <a href="./read.php">products</a>. We have good juices.</p>
 
     <h2>Orange Juice</h2>
     <p>Buy it because it's:</p>

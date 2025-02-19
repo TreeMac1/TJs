@@ -8,6 +8,11 @@ if (isset($_SESSION['success_message'])) {
     unset($_SESSION['success_message']); // Clear the message after displaying it
 }
 
+// Display logout message if set
+if (isset($_SESSION['logout_message'])) {
+    echo "<p style='color: green;'>{$_SESSION['logout_message']}</p>";
+    unset($_SESSION['logout_message']); // Clear the message after displaying it
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -94,6 +99,22 @@ if (isset($_SESSION['success_message'])) {
         .product-item a:hover {
             color: #0056b3;
         }
+        .product-item form {
+            display: inline;
+        }
+        .product-item button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .product-item button:hover {
+            background-color: #218838;
+        }
         .message {
             text-align: center;
             padding: 10px;
@@ -175,6 +196,10 @@ while($row = mysqli_fetch_array($result)) {
     echo "<p><small>Created at: {$row['created_at']}</small></p>";
     echo "<a href='update.php?id={$row['id']}'>Update</a>";
     echo "<a href='delete.php?id={$row['id']}'>Delete</a>";
+    echo "<form method='POST' action='add_to_cart.php'>";
+    echo "<input type='hidden' name='product_id' value='{$row['id']}'>";
+    echo "<button type='submit'>Add to Cart</button>";
+    echo "</form>";
     echo "</div>";
 }
 ?>
