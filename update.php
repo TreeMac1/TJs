@@ -9,6 +9,17 @@ if ($mysqli->connect_error) {
     die("Connection failed: " . $mysqli->connect_error);
 }
 
+?>
+<style> 
+    body {
+        font-family: Arial, sans-serif;
+        background-color: rgb(219, 206, 160);
+        margin: 0;
+        padding: 0;
+    }
+</style>
+<?php
+
 $myid = $mysqli->real_escape_string($_REQUEST['id']);
 $myname = $mysqli->real_escape_string($_REQUEST['name']);
 $myprice = $mysqli->real_escape_string($_REQUEST['price']);

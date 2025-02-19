@@ -21,7 +21,7 @@ if (isset($_SESSION['logout_message'])) {
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color:rgb(219, 206, 160);
+            background-color: rgb(219, 206, 160);
             margin: 0;
             padding: 0;
         }
@@ -38,27 +38,43 @@ if (isset($_SESSION['logout_message'])) {
             border-radius: 5px;
             margin-right: 10px;
             width: 300px;
+            transition: all 0.3s ease;
+        }
+        .search-form input[type="text"]:focus {
+            border-color: #007BFF;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
         }
         .search-form input[type="submit"] {
             padding: 10px 20px;
             font-size: 16px;
             border: none;
             border-radius: 5px;
-            background-color:rgb(255, 0, 0);
+            background-color: #007BFF;
             color: white;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
         .search-form input[type="submit"]:hover {
-            background-color:rgb(255, 3, 3);
+            background-color: #0056b3;
+        }
+        .search-form select {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
         }
         .product-list {
             margin-top: 20px;
+            animation: fadeIn 1s ease-in-out;
         }
         .product-item {
             border: 1px solid #ddd;
             padding: 10px;
             margin-bottom: 10px;
             border-radius: 5px;
+            opacity: 0;
+            animation: slideIn 0.5s forwards;
         }
         .product-item h3 {
             margin: 0;
@@ -70,10 +86,41 @@ if (isset($_SESSION['logout_message'])) {
         .product-item a {
             margin-right: 10px;
             text-decoration: none;
-            color:rgb(255, 0, 0);
+            color: #007BFF;
+            transition: color 0.3s ease;
         }
         .product-item a:hover {
-            text-decoration: underline;
+            color: #0056b3;
+        }
+        .message {
+            text-align: center;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            animation: fadeIn 1s ease-in-out;
+        }
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
     </style>
 </head>
@@ -88,18 +135,36 @@ if (isset($_SESSION['logout_message'])) {
 
 <form method="GET" class="search-form">
     <input type="text" name="search" placeholder="Search products..." value="<?= htmlspecialchars($_GET['search'] ?? '') ?>" />
+    <select name="sort">
+        <option value="name" <?= (isset($_GET['sort']) && $_GET['sort'] == 'name') ? 'selected' : '' ?>>Name</option>
+        <option value="price" <?= (isset($_GET['sort']) && $_GET['sort'] == 'price') ? 'selected' : '' ?>>Price</option>
+        <option value="created_at" <?= (isset($_GET['sort']) && $_GET['sort'] == 'created_at') ? 'selected' : '' ?>>Date Added</option>
+    </select>
     <input type="submit" value="Search" />
 </form>
 
 <div class="product-list">
 <?php
 $search = $mysqli->real_escape_string($_GET['search'] ?? '');
+$sort = $mysqli->real_escape_string($_GET['sort'] ?? 'name');
+
+// Ensure the sort column is valid to prevent SQL injection
+$valid_sort_columns = ['name', 'price', 'created_at'];
+if (!in_array($sort, $valid_sort_columns)) {
+    $sort = 'name';
+}
 
 $sql = "SELECT * FROM products";
 if ($search) {
     $sql .= " WHERE name LIKE '%$search%' OR comment LIKE '%$search%'";
 }
+$sql .= " ORDER BY $sort ASC";
+
 $result = mysqli_query($mysqli, $sql);
+
+if (!$result) {
+    echo "<p>Error: " . mysqli_error($mysqli) . "</p>";
+}
 
 while($row = mysqli_fetch_array($result)) {
     echo "<div class='product-item'>";
