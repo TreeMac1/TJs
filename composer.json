@@ -1,0 +1,19 @@
+{
+    "name": "yourusername/my_project",
+    "description": "A simple web application for managing products and a shopping cart.",
+    "type": "project",
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "ext-mysqli": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ]
+    }
+}
