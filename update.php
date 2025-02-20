@@ -20,34 +20,42 @@ if ($mysqli->connect_error) {
 </style>
 <?php
 
-$myid = $mysqli->real_escape_string($_REQUEST['id']);
-$myname = $mysqli->real_escape_string($_REQUEST['name']);
-$myprice = $mysqli->real_escape_string($_REQUEST['price']);
-$mycomment = $mysqli->real_escape_string($_REQUEST['comment']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id = $mysqli->real_escape_string($_POST['id']);
+    $name = $mysqli->real_escape_string($_POST['name']);
+    $price = $mysqli->real_escape_string($_POST['price']);
+    $comment = $mysqli->real_escape_string($_POST['comment']);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($myname)) {
-    $sql = "UPDATE products SET comment='$mycomment', name='$myname', price='$myprice' WHERE id='$myid'";
-
-    if ($mysqli->query($sql) === TRUE) {
-        echo "$myname updated successfully!";
+    // Handle image upload
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+        $image_path = 'uploads/' . basename($_FILES['image']['name']);
+        move_uploaded_file($_FILES['image']['tmp_name'], $image_path);
     } else {
-        echo "Error: $sql <br>" . $mysqli->error;
+        $image_path = $row['image_path'];
     }
-}
 
-$sql = "SELECT * FROM products WHERE id='$myid'";
-$result = $mysqli->query($sql);
-
-if ($result) {
-    $row = $result->fetch_assoc();
+    $sql = "UPDATE products SET name='$name', price='$price', comment='$comment', image_path='$image_path' WHERE id='$id'";
+    if ($mysqli->query($sql)) {
+        echo "Product updated successfully.";
+    } else {
+        echo "Error: " . $mysqli->error;
+    }
 } else {
-    die("Error: " . $mysqli->error);
+    $id = $mysqli->real_escape_string($_GET['id']);
+    $sql = "SELECT * FROM products WHERE id='$id'";
+    $result = $mysqli->query($sql);
+
+    if ($result) {
+        $row = $result->fetch_assoc();
+    } else {
+        die("Error: " . $mysqli->error);
+    }
 }
 ?>
 
 <html>
 <body>
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?= htmlspecialchars($row['id']) ?>" />
 
     <label>Name:</label>
@@ -59,7 +67,10 @@ if ($result) {
     <label>Comment:</label>
     <textarea name="comment" rows="4" cols="50"><?= htmlspecialchars($row['comment']) ?></textarea>
 
-    <input type="submit" value="update" />
+    <label>Image:</label>
+    <input type="file" name="image" />
+
+    <input type="submit" value="Update" />
 </form>
 </body>
 </html>

@@ -12,7 +12,7 @@ session_start();
             padding: 0;
         }
         header {
-            background-color: #007BFF;
+            background-color:rgb(255, 0, 0);
             color: white;
             padding: 20px 0;
             text-align: center;

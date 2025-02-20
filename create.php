@@ -15,7 +15,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $price = $mysqli->real_escape_string($_POST['price']);
     $comment = $mysqli->real_escape_string($_POST['comment']);
 
-    $sql = "INSERT INTO products (name, price, comment) VALUES ('$name', '$price', '$comment')";
+    // Handle image upload
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+        $image_path = 'uploads/' . basename($_FILES['image']['name']);
+        move_uploaded_file($_FILES['image']['tmp_name'], $image_path);
+    } else {
+        $image_path = null;
+    }
+
+    $sql = "INSERT INTO products (name, price, comment, image_path) VALUES ('$name', '$price', '$comment', '$image_path')";
 
     if ($mysqli->query($sql) === TRUE) {
         echo "<p style='color: green;'>New product created successfully!</p>";
@@ -81,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 <div class="container">
     <h1>Create Product</h1>
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
         <label>Name:</label>
         <input type="text" name="name" maxlength="256" required />
 
@@ -90,6 +98,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <label>Comment:</label>
         <textarea name="comment" rows="4" cols="50"></textarea>
+
+        <label>Image:</label>
+        <input type="file" name="image" />
 
         <input type="submit" value="Create" />
     </form>

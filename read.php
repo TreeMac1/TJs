@@ -67,7 +67,7 @@ if (isset($_SESSION['logout_message'])) {
         .product-list {
             margin-top: 20px;
             padding: 20px;
-            background-color: white;
+            background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             animation: fadeIn 1s ease-in-out;
@@ -77,7 +77,7 @@ if (isset($_SESSION['logout_message'])) {
             padding: 15px;
             margin-bottom: 15px;
             border-radius: 10px;
-            background-color: #f9f9f9;
+            background-color:rgb(163, 147, 130);
             opacity: 0;
             animation: slideIn 0.5s forwards;
         }
@@ -123,9 +123,9 @@ if (isset($_SESSION['logout_message'])) {
             animation: fadeIn 1s ease-in-out;
         }
         .message.success {
-            background-color: #d4edda;
+            background-color:rgb(255, 0, 0);
             color: #155724;
-            border: 1px solid #c3e6cb;
+            border: 1px solidrgb(255, 0, 0);
         }
         @keyframes fadeIn {
             from {
@@ -191,6 +191,9 @@ if (!$result) {
 
 while($row = mysqli_fetch_array($result)) {
     echo "<div class='product-item'>";
+    if (!empty($row['image_path'])) {
+        echo "<img src='{$row['image_path']}' alt='{$row['name']}' style='width:100px;height:100px;'>";
+    }
     echo "<h3>{$row['name']} - \${$row['price']}</h3>";
     echo "<p>{$row['comment']}</p>";
     echo "<p><small>Created at: {$row['created_at']}</small></p>";
