@@ -1,6 +1,5 @@
 <?php
 session_start();
-require_once "db.inc.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $product_id = $_POST['product_id'];
@@ -16,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Redirect back to the products page
-    header("Location: cart.php");
+    header("Location: read.php");
     exit();
 }
 ?>
