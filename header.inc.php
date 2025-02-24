@@ -7,32 +7,38 @@ session_start();
     <title>Header</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f4f4f4;
         }
         header {
-            background-color: rgb(241, 124, 124);
+            background: linear-gradient(90deg, rgba(241, 124, 124, 1) 0%, rgba(255, 94, 94, 1) 100%);
             color: white;
             padding: 20px 0;
             text-align: center;
             position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         header h1 {
             margin: 0;
-            font-size: 2em;
+            font-size: 2.5em;
         }
         nav {
-            margin-top: 10px;
+            margin-top: 15px;
         }
         nav a {
             color: white;
             text-decoration: none;
-            margin: 0 15px;
-            font-size: 1.1em;
+            margin: 0 20px;
+            font-size: 1.2em;
+            transition: color 0.3s, transform 0.3s;
         }
         nav a:hover {
             text-decoration: underline;
+            color: #ffcc00;
+            font-weight: bold;
+            transform: scale(1.1);
         }
         .cart-icon {
             position: absolute;
@@ -41,9 +47,10 @@ session_start();
             font-size: 1.5em;
             color: white;
             text-decoration: none;
+            transition: color 0.3s;
         }
         .cart-icon:hover {
-            color: #ccc;
+            color: #ffcc00;
         }
         .cart-count {
             background-color: #ff0000;
@@ -66,7 +73,8 @@ session_start();
             position: absolute;
             top: 10px;
             left: 10px;
-            height: 70px; /* Increased height */
+            height: 80px; 
+            object-fit: contain;
         }
     </style>
 </head>

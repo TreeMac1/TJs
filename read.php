@@ -20,8 +20,8 @@ if (isset($_SESSION['logout_message'])) {
     <title>Products</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: rgb(219, 206, 160);
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color:rgb(247, 198, 198);
             margin: 0;
             padding: 0;
         }
@@ -65,21 +65,32 @@ if (isset($_SESSION['logout_message'])) {
             margin-right: 10px;
         }
         .product-list {
-            margin-top: 20px;
+            margin: 20px auto;
             padding: 20px;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 1s ease-in-out;
+            max-width: 800px;
         }
         .product-item {
             border: 1px solid #ddd;
             padding: 15px;
             margin-bottom: 15px;
             border-radius: 10px;
-            background-color:rgb(163, 147, 130);
-            opacity: 0;
-            animation: slideIn 0.5s forwards;
+            background-color:rgb(247, 216, 216);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+        .product-item:hover {
+            transform: translateY(-5px);
+        }
+        .product-item img {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            margin-right: 15px;
         }
         .product-item h3 {
             margin: 0;
@@ -123,9 +134,9 @@ if (isset($_SESSION['logout_message'])) {
             animation: fadeIn 1s ease-in-out;
         }
         .message.success {
-            background-color:rgb(255, 0, 0);
+            background-color: #d4edda;
             color: #155724;
-            border: 1px solidrgb(255, 0, 0);
+            border: 1px solid #c3e6cb;
         }
         @keyframes fadeIn {
             from {
@@ -154,7 +165,7 @@ if (isset($_SESSION['logout_message'])) {
     <h2>Trey's Juice Shop, Spring 2025</h2>
 </header>
 
-<h1>Products</h1>
+<h1 style="text-align: center;">Products</h1>
 
 <form method="GET" class="search-form">
     <input type="text" name="search" placeholder="Search products..." value="<?= htmlspecialchars($_GET['search'] ?? '') ?>" />
@@ -192,8 +203,9 @@ if (!$result) {
 while($row = mysqli_fetch_array($result)) {
     echo "<div class='product-item'>";
     if (!empty($row['image_path'])) {
-        echo "<img src='{$row['image_path']}' alt='{$row['name']}' style='width:100px;height:100px;'>";
+        echo "<img src='{$row['image_path']}' alt='{$row['name']}'>";
     }
+    echo "<div>";
     echo "<h3>{$row['name']} - \${$row['price']}</h3>";
     echo "<p>{$row['comment']}</p>";
     echo "<p><small>Created at: {$row['created_at']}</small></p>";
@@ -203,6 +215,7 @@ while($row = mysqli_fetch_array($result)) {
     echo "<input type='hidden' name='product_id' value='{$row['id']}'>";
     echo "<button type='submit'>Add to Cart</button>";
     echo "</form>";
+    echo "</div>";
     echo "</div>";
 }
 ?>
