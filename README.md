@@ -9,6 +9,8 @@ Welcome to the Treys Discount Juice repository! This project showcases my skills
 
 ## About the Project
 Treys Discount Juice is a fictional online store offering a variety of discounted juices and other products. The project demonstrates a dynamic, responsive website that leverages modern web technologies to create an engaging user experience.
+## Screenshot
+![image](https://github.com/user-attachments/assets/b767e9cd-05b7-4f70-8a4b-44323058e2be)
 
 ## Features
 - **Responsive Design**: Ensuring the website looks great on all devices.
