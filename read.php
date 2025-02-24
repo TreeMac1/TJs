@@ -202,8 +202,10 @@ if (!$result) {
 
 while($row = mysqli_fetch_array($result)) {
     echo "<div class='product-item'>";
-    if (!empty($row['image_path'])) {
+    if (!empty($row['image_path']) && file_exists($row['image_path'])) {
         echo "<img src='{$row['image_path']}' alt='{$row['name']}'>";
+    } else {
+        echo "<img src='default-image.png' alt='Default Image'>";
     }
     echo "<div>";
     echo "<h3>{$row['name']} - \${$row['price']}</h3>";
