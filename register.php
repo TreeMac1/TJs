@@ -4,24 +4,23 @@ require_once "db.inc.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $mysqli->real_escape_string($_POST['username']);
-    $password = $mysqli->real_escape_string($_POST['password']);
-    $hashed_password = hash('sha256', $password);
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
     // Check if the username already exists
-    $sql = "SELECT * FROM users WHERE username='$username'";
-    $result = mysqli_query($mysqli, $sql);
+    $sql = "SELECT id FROM users WHERE username = '$username'";
+    $result = $mysqli->query($sql);
 
-    if (mysqli_num_rows($result) > 0) {
-        $error_message = "Username already exists. Please choose a different username.";
+    if ($result->num_rows > 0) {
+        $error_message = "Username already exists.";
     } else {
         // Insert the new user into the database
-        $sql = "INSERT INTO users (username, password) VALUES ('$username', '$hashed_password')";
-        if (mysqli_query($mysqli, $sql)) {
-            $_SESSION['success_message'] = "Account created successfully. Please log in.";
+        $sql = "INSERT INTO users (username, password) VALUES ('$username', '$password')";
+        if ($mysqli->query($sql)) {
+            $_SESSION['success_message'] = "You have successfully registered. Please log in.";
             header("Location: login.php");
             exit();
         } else {
-            $error_message = "Error: " . mysqli_error($mysqli);
+            $error_message = "Error: " . $mysqli->error;
         }
     }
 }
@@ -60,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         .container input[type="text"],
         .container input[type="password"] {
-            width: 93%;
+            width: 95%;
             padding: 10px;
             margin-bottom: 20px;
             border: 1px solid #ddd;
@@ -84,9 +83,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: red;
             text-align: center;
         }
-        .success-message {
-            color: green;
+        .login-link {
             text-align: center;
+            margin-top: 10px;
+        }
+        .login-link a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .login-link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -95,9 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <h2>Register</h2>
         <?php if (isset($error_message)): ?>
             <p class="error-message"><?= htmlspecialchars($error_message) ?></p>
-        <?php endif; ?>
-        <?php if (isset($success_message)): ?>
-            <p class="success-message"><?= htmlspecialchars($success_message) ?></p>
         <?php endif; ?>
         <form method="POST">
             <label>Username:</label>
@@ -108,6 +111,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <input type="submit" value="Register" />
         </form>
+        <div class="login-link">
+            <p>Already have an account? <a href="login.php">Log in</a></p>
+        </div>
     </div>
 </body>
 </html>

@@ -1,5 +1,22 @@
 <?php
 session_start();
+require_once "db.inc.php";
+
+// Function to count the number of items in the cart
+function countCartItems($username, $mysqli) {
+    $sql = "SELECT SUM(quantity) AS total_items FROM cart c 
+            JOIN users u ON c.user_id = u.id 
+            WHERE u.username = '$username'";
+    $result = $mysqli->query($sql);
+    $row = $result->fetch_assoc();
+    return $row['total_items'] ?? 0;
+}
+
+$cart_count = 0;
+if (isset($_SESSION['username'])) {
+    $username = $_SESSION['username'];
+    $cart_count = countCartItems($username, $mysqli);
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -44,7 +61,7 @@ session_start();
             position: absolute;
             top: 20px;
             right: 20px;
-            font-size: 1.5em;
+            font-size: 2em; /* Increased font size */
             color: white;
             text-decoration: none;
             transition: color 0.3s;
@@ -101,8 +118,8 @@ session_start();
         </nav>
         <a href="cart.php" class="cart-icon">
             &#128722;
-            <?php if (isset($_SESSION['cart']) && count($_SESSION['cart']) > 0): ?>
-                <span class="cart-count"><?= count($_SESSION['cart']) ?></span>
+            <?php if ($cart_count > 0): ?>
+                <span class="cart-count"><?= $cart_count ?></span>
             <?php endif; ?>
         </a>
     </header>
