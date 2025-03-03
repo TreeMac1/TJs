@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once "db.inc.php";
 include "header.inc.php";
 
@@ -10,7 +11,18 @@ if ($mysqli->connect_error) {
     die("Connection failed: " . $mysqli->connect_error);
 }
 
+// Generate a new CSRF token for each form load
+$_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Validate CSRF token
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die("Invalid CSRF token");
+    }
+
+    // Unset CSRF token after use
+    unset($_SESSION['csrf_token']);
+
     $name = $mysqli->real_escape_string($_POST['name']);
     $price = $mysqli->real_escape_string($_POST['price']);
     $comment = $mysqli->real_escape_string($_POST['comment']);
@@ -18,7 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Handle image upload
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
         $image_path = 'uploads/' . basename($_FILES['image']['name']);
-        move_uploaded_file($_FILES['image']['tmp_name'], $image_path);
+        if (!move_uploaded_file($_FILES['image']['tmp_name'], $image_path)) {
+            die("Error moving uploaded file");
+        }
     } else {
         $image_path = null;
     }
@@ -40,19 +54,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color:rgb(219, 206, 160);
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 50px auto;
             padding: 20px;
             background-color: white;
+            border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
         }
-        h1 {
+        .container h1 {
             text-align: center;
             color: #333;
         }
@@ -61,28 +75,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flex-direction: column;
         }
         label {
-            margin-bottom: 5px;
-            color: #555;
+            margin-top: 10px;
+            font-weight: bold;
         }
         input[type="text"],
-        textarea {
+        textarea,
+        input[type="file"] {
             padding: 10px;
-            margin-bottom: 20px;
+            margin-top: 5px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            font-size: 16px;
+            box-sizing: border-box;
         }
         input[type="submit"] {
-            padding: 10px 20px;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007BFF;
             border: none;
             border-radius: 5px;
-            background-color:rgb(255, 0, 0);
             color: white;
             font-size: 16px;
             cursor: pointer;
         }
         input[type="submit"]:hover {
-            background-color:rgb(255, 4, 4);
+            background-color: rgb(255, 4, 4);
         }
     </style>
 </head>
@@ -90,6 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="container">
     <h1>Create Product</h1>
     <form method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
         <label>Name:</label>
         <input type="text" name="name" maxlength="256" required />
 
@@ -104,6 +121,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <input type="submit" value="Create" />
     </form>
+
+    <!-- Debugging information for CSRF token -->
+    <p>CSRF Token: <?= htmlspecialchars($_SESSION['csrf_token']) ?></p>
 </div>
 </body>
 </html>
