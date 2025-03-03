@@ -12,7 +12,9 @@ if ($mysqli->connect_error) {
 }
 
 // Generate a new CSRF token for each form load
-$_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validate CSRF token
@@ -29,9 +31,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Handle image upload
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-        $image_path = 'uploads/' . basename($_FILES['image']['name']);
-        if (!move_uploaded_file($_FILES['image']['tmp_name'], $image_path)) {
-            die("Error moving uploaded file");
+        $uploadFileDir = './uploads/';
+        $fileTmpPath = $_FILES['image']['tmp_name'];
+        $fileName = $_FILES['image']['name'];
+        $dest_path = $uploadFileDir . basename($fileName);
+
+        // Ensure the upload directory exists and is writable
+        if (!is_dir($uploadFileDir)) {
+            mkdir($uploadFileDir, 0755, true);
+        }
+
+        if (move_uploaded_file($fileTmpPath, $dest_path)) {
+            $image_path = $dest_path;
+        } else {
+            $error_message = 'There was an error moving the uploaded file.';
+            error_log("Error moving file: " . print_r($_FILES['image'], true));
+            die($error_message);
         }
     } else {
         $image_path = null;
