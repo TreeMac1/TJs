@@ -7,6 +7,9 @@ if (!isset($_SESSION['username'])) {
     die("You must be logged in to view your cart.");
 }
 
+// Generate a new CSRF token for each form load
+$_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
 $username = $_SESSION['username'];
 
 // Function to calculate the total price
@@ -148,6 +151,7 @@ $total = calculateTotal($username, $mysqli);
                     <p>Quantity: <?= htmlspecialchars($product['quantity']) ?></p>
                 </div>
                 <form method='POST' action='remove_from_cart.php'>
+                    <input type='hidden' name='csrf_token' value='<?= htmlspecialchars($_SESSION['csrf_token']) ?>'>
                     <input type='hidden' name='product_id' value='<?= htmlspecialchars($product['id']) ?>'>
                     <button type='submit'>Remove from Cart</button>
                 </form>
@@ -159,6 +163,7 @@ $total = calculateTotal($username, $mysqli);
         <a href="checkout.php" class="checkout-link">Proceed to Checkout</a>
     <?php endif; ?>
 </div>
+
 
 </body>
 </html>

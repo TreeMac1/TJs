@@ -107,8 +107,8 @@ if (isset($_SESSION['username'])) {
         <nav>
             <a href="index.php">Home</a>
             <a href="read.php">Products</a>
-            <a href="create.php">Add Product</a>
             <?php if (isset($_SESSION['username'])): ?>
+                <a href="create.php">Add Product</a>
                 <a href="profile.php">Profile</a>
                 <a href="logout.php">Logout</a>
             <?php else: ?>

@@ -1,6 +1,10 @@
 <?php
+session_start();
 require_once "db.inc.php";
 include "header.inc.php";
+
+// Generate a new CSRF token for each form load
+$_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
 // Display success message if set
 if (isset($_SESSION['success_message'])) {
@@ -212,8 +216,9 @@ while($row = mysqli_fetch_array($result)) {
     echo "<p>{$row['comment']}</p>";
     echo "<p><small>Created at: {$row['created_at']}</small></p>";
     echo "<a href='update.php?id={$row['id']}'>Update</a>";
-    echo "<a href='delete.php?id={$row['id']}'>Delete</a>";
+    echo "<a href='delete.php?id={$row['id']}&csrf_token=" . htmlspecialchars($_SESSION['csrf_token']) . "'>Delete</a>";
     echo "<form method='POST' action='add_to_cart.php'>";
+    echo "<input type='hidden' name='csrf_token' value='" . htmlspecialchars($_SESSION['csrf_token']) . "'>";
     echo "<input type='hidden' name='product_id' value='{$row['id']}'>";
     echo "<button type='submit'>Add to Cart</button>";
     echo "</form>";
