@@ -8,13 +8,13 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
 // Display success message if set
 if (isset($_SESSION['success_message'])) {
-    echo "<p style='color: green;'>{$_SESSION['success_message']}</p>";
+    echo "<p style='color: green;'>" . htmlspecialchars($_SESSION['success_message']) . "</p>";
     unset($_SESSION['success_message']); // Clear the message after displaying it
 }
 
 // Display logout message if set
 if (isset($_SESSION['logout_message'])) {
-    echo "<p style='color: green;'>{$_SESSION['logout_message']}</p>";
+    echo "<p style='color: green;'>" . htmlspecialchars($_SESSION['logout_message']) . "</p>";
     unset($_SESSION['logout_message']); // Clear the message after displaying it
 }
 ?>
@@ -22,147 +22,9 @@ if (isset($_SESSION['logout_message'])) {
 <html>
 <head>
     <title>Products</title>
-    <style>
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color:rgb(247, 198, 198);
-            margin: 0;
-            padding: 0;
-        }
-        .search-form {
-            margin-bottom: 20px; /* Adjust the value as needed */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .search-form input[type="text"] {
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-right: 10px;
-            width: 300px;
-            transition: all 0.3s ease;
-        }
-        .search-form input[type="text"]:focus {
-            border-color: #007BFF;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-        }
-        .search-form input[type="submit"] {
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007BFF;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .search-form input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-        .search-form select {
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
-        .product-list {
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
-        }
-        .product-item {
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 10px;
-            background-color:rgb(247, 216, 216);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            transition: transform 0.3s ease;
-        }
-        .product-item:hover {
-            transform: translateY(-5px);
-        }
-        .product-item img {
-            width: 100px;
-            height: 100px;
-            border-radius: 10px;
-            margin-right: 15px;
-        }
-        .product-item h3 {
-            margin: 0;
-            font-size: 1.5em;
-            color: #333;
-        }
-        .product-item p {
-            margin: 5px 0;
-            color: #666;
-        }
-        .product-item a {
-            margin-right: 10px;
-            text-decoration: none;
-            color: #007BFF;
-            transition: color 0.3s ease;
-        }
-        .product-item a:hover {
-            color: #0056b3;
-        }
-        .product-item form {
-            display: inline;
-        }
-        .product-item button {
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            background-color: #28a745;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .product-item button:hover {
-            background-color: #218838;
-        }
-        .message {
-            text-align: center;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            animation: fadeIn 1s ease-in-out;
-        }
-        .message.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-        @keyframes slideIn {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
-<body>
+<body class="read">
 
 <!-- Header section -->
 <header>
@@ -201,31 +63,36 @@ $sql .= " ORDER BY $sort ASC";
 $result = mysqli_query($mysqli, $sql);
 
 if (!$result) {
-    echo "<p>Error: " . mysqli_error($mysqli) . "</p>";
+    echo "<p>Error: " . htmlspecialchars(mysqli_error($mysqli)) . "</p>";
 }
 
 while($row = mysqli_fetch_array($result)) {
     echo "<div class='product-item'>";
     if (!empty($row['image_path']) && file_exists($row['image_path'])) {
-        echo "<img src='{$row['image_path']}' alt='{$row['name']}'>";
+        echo "<img src='" . htmlspecialchars($row['image_path']) . "' alt='" . htmlspecialchars($row['name']) . "'>";
     } else {
         echo "<img src='default-image.png' alt='Default Image'>";
     }
     echo "<div>";
-    echo "<h3>{$row['name']} - \${$row['price']}</h3>";
-    echo "<p>{$row['comment']}</p>";
-    echo "<p><small>Created at: {$row['created_at']}</small></p>";
-    echo "<a href='update.php?id={$row['id']}'>Update</a>";
-    echo "<a href='delete.php?id={$row['id']}&csrf_token=" . htmlspecialchars($_SESSION['csrf_token']) . "'>Delete</a>";
+    echo "<h3>" . htmlspecialchars($row['name']) . " - $" . htmlspecialchars($row['price']) . "</h3>";
+    echo "<p>" . htmlspecialchars($row['comment']) . "</p>";
+    echo "<p><small>Created at: " . htmlspecialchars($row['created_at']) . "</small></p>";
+    echo "<a href='update.php?id=" . htmlspecialchars($row['id']) . "'>Update</a>";
+    echo "<a href='delete.php?id=" . htmlspecialchars($row['id']) . "&csrf_token=" . htmlspecialchars($_SESSION['csrf_token']) . "'>Delete</a>";
     echo "<form method='POST' action='add_to_cart.php'>";
     echo "<input type='hidden' name='csrf_token' value='" . htmlspecialchars($_SESSION['csrf_token']) . "'>";
-    echo "<input type='hidden' name='product_id' value='{$row['id']}'>";
+    echo "<input type='hidden' name='product_id' value='" . htmlspecialchars($row['id']) . "'>";
     echo "<button type='submit'>Add to Cart</button>";
     echo "</form>";
     echo "</div>";
     echo "</div>";
 }
 ?>
+</div>
+
+<!-- Display CSRF token for debugging purposes -->
+<!-- <div class="csrf-token">
+    <p>CSRF Token: <?= htmlspecialchars($_SESSION['csrf_token']) ?></p> -->
 </div>
 
 </body>

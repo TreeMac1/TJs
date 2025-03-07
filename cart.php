@@ -43,100 +43,9 @@ $total = calculateTotal($username, $mysqli);
 <html>
 <head>
     <title>Cart</title>
-    <style>
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: rgb(247, 198, 198);
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-        .container h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-        }
-        .cart-item {
-            display: flex;
-            align-items: center;
-            border: 1px solid #ddd;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
-        }
-        .cart-item:hover {
-            transform: scale(1.02);
-        }
-        .cart-item img {
-            width: 150px;
-            height: 150px;
-            border-radius: 10px;
-            margin-right: 20px;
-            object-fit: cover;
-        }
-        .cart-item div {
-            flex: 1;
-        }
-        .cart-item h3 {
-            margin: 0;
-            font-size: 1.5em;
-            color: #333;
-        }
-        .cart-item p {
-            margin: 10px 0;
-            color: #666;
-        }
-        .cart-item small {
-            color: #999;
-        }
-        .cart-item form {
-            display: inline-block;
-        }
-        .cart-item button {
-            padding: 10px 20px;
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .cart-item button:hover {
-            background-color: #c82333;
-        }
-        .total {
-            text-align: right;
-            font-size: 1.2em;
-            margin-top: 20px;
-        }
-        .checkout-link {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-        .checkout-link:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
-<body>
-
+<body class="cart">
 <div class="container">
     <h2>Your Cart</h2>
     <?php if (empty($cart)): ?>
@@ -162,8 +71,16 @@ $total = calculateTotal($username, $mysqli);
         </div>
         <a href="checkout.php" class="checkout-link">Proceed to Checkout</a>
     <?php endif; ?>
+    <!-- Display CSRF token for debugging purposes -->
+   <!-- <div class="csrf-token">
+        <p>CSRF Token: <?= htmlspecialchars($_SESSION['csrf_token']) ?></p> -->
+    </div>
 </div>
 
-
+<!-- <script>
+    // Log the CSRF token to the console for debugging purposes
+    const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+    console.log("CSRF Token:", csrfToken);
+</script> -->
 </body>
 </html>

@@ -138,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </form>
 
     <!-- Debugging information for CSRF token -->
-    <p>CSRF Token: <?= htmlspecialchars($_SESSION['csrf_token']) ?></p>
+   <!-- <p>CSRF Token: <?= htmlspecialchars($_SESSION['csrf_token']) ?></p> -->
 </div>
 </body>
 </html>
